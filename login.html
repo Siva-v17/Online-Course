@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — STACKLY</title>
+<meta name="description" content="Log in or create a STACKLY Capital account to access your dashboard.">
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#F7F6F1;
+  --ink-2:#FFFFFF;
+  --ink-3:#EFEDE4;
+  --paper:#FFFFFF;
+  --paper-2:#EFEDE4;
+  --dark:#14172A;
+  --violet:#7C5CFC;
+  --violet-soft:#a996ff;
+  --gold:#F5A623;
+  --coral:#FF6B5E;
+  --slate:#5B6178;
+  --ink-text:#14172A;
+  --line:rgba(20,23,42,.10);
+  --line-dark:rgba(20,23,42,.1);
+  --radius:18px;
+  --radius-sm:10px;
+  --maxw:1280px;
+  --ease:cubic-bezier(.16,.84,.44,1);
+  --shadow:0 20px 60px -20px rgba(20,23,42,.15);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--ink-text);
+  font-family:'Inter',sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;margin:0;padding:0;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;}
+
+::selection{background:var(--violet);color:#fff;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
+}
+
+/* ---------- typography ---------- */
+h1,h2,h3,h4{
+  font-family:'Bricolage Grotesque',sans-serif;
+  font-weight:700;
+  line-height:1.05;
+  margin:0;
+  letter-spacing:-.01em;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:.72rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--gold);
+  display:inline-flex;
+  align-items:center;
+  gap:.6em;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--gold);display:inline-block;}
+.lead{font-size:1.15rem;color:var(--slate);line-height:1.65;max-width:60ch;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+section{position:relative;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,64px);}
+.section-pad{padding:clamp(70px,10vw,140px) 0;}
+.on-light{background:var(--paper);color:var(--ink-text);}
+.on-light .slate{color:#5b6178;}
+.on-panel{background:var(--ink-2);}
+
+.grid{display:grid;gap:28px;}
+.g-2{grid-template-columns:repeat(2,1fr);}
+.g-3{grid-template-columns:repeat(3,1fr);}
+.g-4{grid-template-columns:repeat(4,1fr);}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:15px 26px;border-radius:100px;
+  font-weight:600;font-size:.95rem;
+  border:1px solid transparent;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),background .3s,color .3s,border-color .3s;
+  white-space:nowrap;
+}
+.btn-primary{background:var(--gold);color:#1a1300;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(245,166,35,.55);}
+.btn-ghost{border-color:var(--line);color:var(--ink-text);}
+.btn-ghost:hover{border-color:var(--violet-soft);background:rgba(124,92,252,.1);transform:translateY(-3px);}
+.btn-dark{background:var(--dark);color:#fff;}
+.btn-dark:hover{transform:translateY(-3px);box-shadow:0 14px 30px -10px rgba(11,14,26,.5);}
+.btn-block{width:100%;justify-content:center;}
+.btn-sm{padding:10px 18px;font-size:.85rem;}
+.arrow{transition:transform .3s var(--ease);}
+.btn:hover .arrow{transform:translate(3px,-3px);}
+
+/* ---------- header / nav ---------- */
+.site-header{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  padding:18px 0;
+  transition:background .4s,padding .4s,border-color .4s;
+  border-bottom:1px solid transparent;
+}
+.site-header.scrolled{background:rgba(247,246,241,.88);backdrop-filter:blur(14px);padding:12px 0;border-color:var(--line);box-shadow:0 1px 0 var(--line);}
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.brand{display:flex;align-items:center;gap:10px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.3rem;}
+.brand .dot{width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(245,166,35,.2), 0 0 18px rgba(245,166,35,.7);}
+.logo{display:inline-flex;align-items:center;}
+.logo img{height: 50px;width:auto;display:block;transition:opacity .3s;}
+.logo:hover img{opacity:.85;}
+.dash-sidebar .logo img,.auth-form-side .logo img{height:50px;}
+.nav-links{display:flex;align-items:center;gap:34px;}
+.nav-links a{font-size:.93rem;font-weight:500;color:var(--slate);position:relative;padding:4px 0;transition:color .3s;}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .35s var(--ease);}
+.nav-links a:hover,.nav-links a.active{color:var(--ink-text);}
+.nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+.nav-cta{display:flex;align-items:center;gap:14px;}
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;padding:8px;}
+.burger span{width:22px;height:2px;background:var(--ink-text);transition:transform .3s,opacity .3s;}
+
+.mobile-panel{
+  position:fixed;inset:0;background:var(--ink-2);z-index:300;
+  display:flex;flex-direction:column;justify-content:center;gap:26px;padding:40px;
+  transform:translateY(-100%);transition:transform .5s var(--ease);
+}
+.mobile-panel.open{transform:translateY(0);}
+.mobile-panel a{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:700;}
+.mobile-panel .close-btn{position:absolute;top:22px;right:24px;background:none;border:none;color:var(--ink-text);font-size:1.6rem;}
+
+/* ---------- footer ---------- */
+.site-footer{background:var(--ink-2);border-top:1px solid var(--line);padding:70px 0 30px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:56px;}
+.footer-grid h5{font-family:'IBM Plex Mono',monospace;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin-bottom:18px;}
+.footer-grid li{margin-bottom:11px;}
+.footer-grid a{color:var(--ink-text);opacity:.8;font-size:.94rem;transition:opacity .3s,color .3s;}
+.footer-grid a:hover{opacity:1;color:var(--gold);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--line);color:var(--slate);font-size:.85rem;flex-wrap:wrap;gap:12px;}
+.social-row{display:flex;gap:14px;}
+.social-row a{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:border-color .3s,background .3s,transform .3s;}
+.social-row a:hover{border-color:var(--gold);background:rgba(245,166,35,.1);transform:translateY(-3px);}
+
+/* ---------- orbit hero motif ---------- */
+.orbit-stage{position:relative;width:100%;aspect-ratio:1/1;max-width:560px;margin:0 auto;}
+.orbit-ring{position:absolute;border:1px dashed var(--line);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);}
+.orbit-core{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--gold),var(--coral) 70%);
+  box-shadow:0 0 70px rgba(245,166,35,.55),0 0 140px rgba(255,107,94,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;color:#1a1300;font-size:.95rem;
+}
+.orbit-sat{
+  position:absolute;top:50%;left:50%;
+  width:54px;height:54px;border-radius:16px;
+  background:var(--ink-3);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  box-shadow:var(--shadow);
+}
+
+/* ---------- marquee ---------- */
+.marquee-strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--ink-2);padding:22px 0;overflow:hidden;}
+.marquee-track{display:flex;width:max-content;gap:48px;}
+.marquee-track span{
+  font-family:'Bricolage Grotesque',sans-serif;font-size:1.6rem;font-weight:700;color:var(--slate);
+  display:flex;align-items:center;gap:48px;white-space:nowrap;
+}
+.marquee-track span em{font-style:normal;color:var(--gold);}
+.marquee-track .sep{color:var(--violet-soft);}
+
+/* ---------- cards ---------- */
+.card{
+  background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);
+  padding:30px;transition:transform .4s var(--ease),border-color .4s,box-shadow .4s;
+}
+.card:hover{transform:translateY(-8px);border-color:rgba(124,92,252,.4);box-shadow:var(--shadow);}
+.card .icon-box{width:52px;height:52px;border-radius:14px;background:rgba(124,92,252,.14);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin-bottom:20px;}
+
+.course-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .4s var(--ease),border-color .4s;}
+.course-card:hover{transform:translateY(-8px);border-color:rgba(245,166,35,.4);}
+.course-media{position:relative;aspect-ratio:16/10;overflow:hidden;}
+.course-media img{width:100%;height:100%;object-fit:cover;transition:transform .7s var(--ease);}
+.course-card:hover .course-media img{transform:scale(1.08);}
+.course-tag{position:absolute;top:14px;left:14px;background:rgba(11,14,26,.75);backdrop-filter:blur(6px);padding:6px 12px;border-radius:100px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+.course-body{padding:22px;}
+.course-meta{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--slate);margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+.stars{color:var(--gold);}
+.price{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--ink-text);}
+
+/* ---------- stats ---------- */
+.stat-num{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:800;color:var(--gold);}
+.stat-label{color:var(--slate);font-size:.9rem;margin-top:6px;}
+
+/* ---------- forms ---------- */
+.field{margin-bottom:20px;}
+.field label{display:block;font-size:.82rem;color:var(--slate);margin-bottom:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;}
+.field input,.field textarea,.field select{
+  width:100%;padding:14px 16px;border-radius:var(--radius-sm);
+  border:1px solid var(--line);background:var(--ink-3);color:var(--ink-text);font-size:.96rem;
+  transition:border-color .3s,box-shadow .3s;
+}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--violet-soft);box-shadow:0 0 0 4px rgba(124,92,252,.18);}
+.on-light .field input,.on-light .field textarea,.on-light .field select{background:#fff;border-color:var(--line-dark);color:var(--ink-text);}
+.field-error{display:none;color:var(--coral);font-size:.78rem;margin-top:7px;font-family:'IBM Plex Mono',monospace;}
+.field.has-error input{border-color:var(--coral);box-shadow:0 0 0 4px rgba(255,107,94,.14);}
+.field.has-error .field-error{display:block;}
+
+/* ---------- utility reveal ---------- */
+.reveal{opacity:0;transform:translateY(36px);}
+.split-line span{display:inline-block;will-change:transform;}
+
+/* focus visibility */
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+/* cursor comet */
+.comet{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:999;mix-blend-mode:screen;box-shadow:0 0 18px 4px rgba(245,166,35,.7);display:none;}
+@media (hover:hover){ .comet{display:block;} }
+
+/* divider arc */
+.arc-divider{width:100%;height:64px;overflow:hidden;}
+.arc-divider svg{width:100%;height:100%;display:block;}
+
+/* badge */
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:100px;background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.3);color:var(--violet);font-size:.78rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;}
+
+/* progress ring (dashboards) */
+.ring-wrap{position:relative;width:120px;height:120px;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-wrap .ring-bg{fill:none;stroke:var(--line);stroke-width:9;}
+.ring-wrap .ring-fg{fill:none;stroke:var(--gold);stroke-width:9;stroke-linecap:round;}
+.ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-weight:600;}
+
+/* table */
+.data-table{width:100%;border-collapse:collapse;}
+.data-table th{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate);padding:12px 16px;border-bottom:1px solid var(--line);}
+.data-table td{padding:16px;border-bottom:1px solid var(--line);font-size:.9rem;}
+.data-table tr:hover td{background:rgba(124,92,252,.06);}
+.pill{padding:5px 12px;border-radius:100px;font-size:.74rem;font-family:'IBM Plex Mono',monospace;}
+.pill.ok{background:rgba(27,138,75,.12);color:#1b8a4b;}
+.pill.warn{background:rgba(245,166,35,.15);color:#a3660d;}
+.pill.bad{background:rgba(214,71,58,.12);color:#d6473a;}
+
+/* ---------- dashboard shell ---------- */
+.dash-shell{display:grid;grid-template-columns:260px 1fr;min-height:100vh;background:var(--ink);}
+.dash-sidebar{background:var(--ink-2);border-right:1px solid var(--line);padding:26px 20px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.dash-sidebar .brand{margin-bottom:34px;}
+.dash-nav a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;color:var(--slate);font-size:.9rem;font-weight:500;margin-bottom:4px;transition:background .3s,color .3s;}
+.dash-nav a .ico{width:20px;text-align:center;}
+.dash-nav a:hover{background:rgba(20,23,42,.05);color:var(--ink-text);}
+.dash-nav a.active{background:rgba(245,166,35,.12);color:var(--gold);}
+.dash-nav .nav-group-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--slate);margin:18px 14px 8px;opacity:.6;}
+.dash-main{padding:30px clamp(20px,3vw,40px) 60px;max-width:1400px;}
+.dash-topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;gap:20px;flex-wrap:wrap;}
+.dash-user{display:flex;align-items:center;gap:12px;}
+.dash-user img{width:40px;height:40px;border-radius:50%;object-fit:cover;}
+.dash-burger{display:none;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;padding:9px 12px;color:var(--ink-text);}
+.kpi-card{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:22px;}
+.kpi-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.kpi-trend{font-family:'IBM Plex Mono',monospace;font-size:.76rem;padding:4px 9px;border-radius:100px;}
+.kpi-trend.up{background:rgba(27,138,75,.12);color:#1b8a4b;display:inline-flex;align-items:center;gap:3px;}
+.kpi-trend.down{background:rgba(214,71,58,.12);color:#d6473a;display:inline-flex;align-items:center;gap:3px;}
+.panel{background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.avatar-stack{display:flex;}
+.avatar-stack img{width:30px;height:30px;border-radius:50%;object-fit:cover;border:2px solid var(--ink-2);margin-left:-10px;}
+.avatar-stack img:first-child{margin-left:0;}
+.progress-bar{height:8px;border-radius:100px;background:var(--ink-3);overflow:hidden;}
+.progress-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--violet),var(--gold));border-radius:100px;}
+
+@media (max-width:900px){
+  .dash-shell{grid-template-columns:1fr;}
+  .dash-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;z-index:400;transform:translateX(-100%);transition:transform .4s var(--ease);}
+  .dash-sidebar.open{transform:translateX(0);}
+  .dash-burger{display:inline-flex;}
+}
+
+/* ============ responsive ============ */
+@media (max-width:1024px){
+  .g-4{grid-template-columns:repeat(2,1fr);}
+  .g-3{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1.2fr 1fr 1fr;}
+}
+@media (max-width:900px){
+  .nav-links{display:none;}
+  .burger{display:flex;}
+}
+@media (max-width:760px){
+  .g-2,.g-3,.g-4{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
+  .section-pad{padding:56px 0;}
+}
+@media (max-width:480px){
+  .footer-grid{grid-template-columns:1fr;}
+  .btn{padding:13px 20px;font-size:.88rem;}
+  .orbit-sat{width:44px;height:44px;font-size:1.05rem;}
+}
+
+/* ---------- icon system (inline svg sprite) ---------- */
+.icon{
+  width:1em;height:1em;
+  stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  vertical-align:-.15em;flex-shrink:0;
+}
+.star-row{display:inline-flex;align-items:center;gap:1px;margin-right:2px;}
+.icon-star{width:15px;height:15px;stroke:none;vertical-align:-2px;}
+.icon-star.filled{fill:var(--gold);}
+.icon-star.outline{fill:none;stroke:var(--gold);stroke-width:1.6;}
+.stars{display:inline-flex;align-items:center;gap:2px;}
+
+.card .icon-box,.icon-box{color:var(--violet);}
+.icon-box .icon{width:24px;height:24px;}
+.orbit-sat{color:var(--ink-text);}
+.orbit-sat .icon{width:22px;height:22px;}
+.dash-nav a .ico{display:inline-flex;}
+.dash-nav a .ico .icon{width:18px;height:18px;}
+.kpi-trend .icon{width:12px;height:12px;}
+.close-btn{display:inline-flex;align-items:center;justify-content:center;}
+.close-btn .icon{width:22px;height:22px;}
+.dash-burger{display:inline-flex;align-items:center;justify-content:center;}
+.dash-burger .icon{width:19px;height:19px;}
+.burger.is-icon{display:none;}
+.notif-bell{position:relative;display:inline-flex;color:var(--slate);}
+.notif-bell .icon{width:20px;height:20px;}
+.notif-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:var(--coral);border-radius:50%;border:2px solid var(--ink-2);}
+.filter-bar .icon,.field .icon{width:16px;height:16px;}
+.arrow{display:inline-flex;align-items:center;}
+.arrow .icon{width:15px;height:15px;}
+.card-icon-row{display:flex;align-items:center;gap:12px;}
+.card-icon-row .icon{width:20px;height:20px;color:var(--violet);flex-shrink:0;margin-top:2px;}
+
+
+  .auth-shell{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;}
+  .auth-visual{position:relative;background:linear-gradient(160deg,var(--ink-3),var(--ink));overflow:hidden;display:flex;align-items:center;justify-content:center;}
+  .auth-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(124,92,252,.35),transparent 55%),radial-gradient(circle at 80% 80%,rgba(245,166,35,.2),transparent 50%);}
+  .auth-form-side{display:flex;align-items:center;justify-content:center;padding:40px;}
+  .auth-box{width:100%;max-width:420px;}
+  .auth-tabs{display:flex;gap:6px;background:var(--ink-3);padding:6px;border-radius:100px;margin-bottom:32px;}
+  .auth-tabs button{flex:1;padding:11px;border-radius:100px;border:none;background:transparent;color:var(--slate);font-weight:600;font-size:.9rem;transition:all .3s;}
+  .auth-tabs button.active{background:var(--gold);color:#1a1300;}
+  .pw-row{position:relative;}
+  .pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--slate);font-size:.78rem;font-family:'IBM Plex Mono',monospace;}
+  .divider{display:flex;align-items:center;gap:14px;margin:26px 0;color:var(--slate);font-size:.8rem;}
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line);}
+  .oauth-row{display:flex;gap:12px;}
+  .oauth-row button{flex:1;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--ink-3);color:var(--ink-text);font-weight:500;font-size:.86rem;transition:border-color .3s,transform .3s;}
+  .oauth-row button:hover{border-color:var(--violet-soft);transform:translateY(-2px);}
+  .oauth-row button svg{width:18px;height:18px;flex-shrink:0;}
+  @media (max-width:900px){
+    .auth-shell{grid-template-columns:1fr;}
+    .auth-visual{display:none;}
+    .auth-form-side{padding:32px 24px;min-height:100vh;}
+    .auth-box{max-width:440px;}
+  }
+  @media (max-width:600px){
+    .auth-form-side{padding:28px 18px;align-items:flex-start;}
+    .auth-box{max-width:100%;padding-top:8px;}
+    .auth-box .logo img{height:26px;}
+    .auth-tabs{margin-bottom:24px;}
+    .auth-tabs button{padding:10px;font-size:.86rem;}
+    .auth-box h1{font-size:1.45rem !important;}
+    .role-toggle{gap:8px;}
+    .role-toggle button{padding:12px 8px;font-size:.76rem;}
+    .field{margin-bottom:16px;}
+    .field input{padding:12px 14px;font-size:.92rem;}
+    .oauth-row{gap:8px;}
+    .oauth-row button{padding:11px 8px;font-size:.8rem;gap:6px;}
+    .divider{margin:20px 0;}
+  }
+  @media (max-width:380px){
+    .auth-form-side{padding:22px 14px;}
+    .oauth-row{flex-direction:column;}
+    .role-toggle{flex-direction:column;}
+    .btn-block{padding:14px 18px;}
+  }
+
+  /* ---------- role toggle (member / admin) ---------- */
+  .role-label{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);display:block;margin:22px 0 10px;}
+  .role-toggle{display:flex;gap:12px;margin-bottom:24px;}
+  .role-toggle button{
+    flex:1;padding:14px;border-radius:12px;
+    border:1px solid var(--line-dark);background:var(--ink-3);
+    color:var(--slate);font-weight:600;font-size:.85rem;
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;
+    transition:all .3s;
+  }
+  .role-toggle button.active{
+    border-color:var(--coral);
+    background:rgba(255,107,94,.1);
+    color:var(--gold);
+    box-shadow:0 0 0 1px rgba(255,107,94,.25) inset,0 0 18px rgba(255,107,94,.15);
+  }
+
+  /* ---------- popup modal ---------- */
+  .popup-overlay{
+    position:fixed;inset:0;background:rgba(11,14,26,.6);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    z-index:800;opacity:0;pointer-events:none;transition:opacity .3s var(--ease);
+  }
+  .popup-overlay.open{opacity:1;pointer-events:auto;}
+  .popup-box{
+    background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);
+    padding:32px;max-width:380px;width:100%;position:relative;
+    box-shadow:var(--shadow);text-align:center;
+    transform:translateY(14px) scale(.97);opacity:0;transition:all .35s var(--ease);
+  }
+  .popup-overlay.open .popup-box{transform:translateY(0) scale(1);opacity:1;}
+  .popup-box .icon-box{margin:0 auto 16px;width:52px;height:52px;border-radius:50%;background:rgba(124,92,252,.14);display:flex;align-items:center;justify-content:center;}
+  .popup-box .icon-box .icon{width:24px;height:24px;color:var(--violet);}
+  .popup-box h3{font-size:1.15rem;margin-bottom:8px;}
+  .popup-box p{color:var(--slate);font-size:.9rem;line-height:1.55;margin:0 0 22px;}
+  .popup-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--slate);}
+
+  /* ---------- auth circle visual (replaces orbit motif) ---------- */
+  .auth-circle-wrap{position:relative;z-index:1;text-align:center;padding:0 40px;}
+  .auth-circle-wrap .logo{justify-content:center;margin-bottom:32px;}
+  .auth-circle-wrap .logo img{height: 50px;}
+  .auth-circle{
+    position:relative;width:min(400px,82vw);aspect-ratio:1/1;margin:0 auto;
+    border-radius:45%;overflow:hidden;
+    border:1px solid var(--line);box-shadow:var(--shadow);
+    background:radial-gradient(circle at 32% 28%,rgba(124,92,252,.28),transparent 60%),var(--ink-2);
+  }
+  .auth-circle svg{width:100%;height:100%;display:block;}
+  .auth-circle-ring{
+    position:absolute;inset:-30px;border:1px dashed var(--line);border-radius:50%;
+    pointer-events:none;
+  }
+
+</style>
+</head>
+<body><svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false"><defs><symbol id="icon-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol><symbol id="icon-x" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></symbol><symbol id="icon-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol><symbol id="icon-check-circle" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></symbol><symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol><symbol id="icon-layers" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></symbol><symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="icon-bar-chart-2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></symbol><symbol id="icon-trending-up" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></symbol><symbol id="icon-graduation-cap" viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></symbol><symbol id="icon-users" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="icon-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></symbol><symbol id="icon-credit-card" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></symbol><symbol id="icon-file-text" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></symbol><symbol id="icon-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol><symbol id="icon-corner-up-left" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></symbol><symbol id="icon-menu" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></symbol><symbol id="icon-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol><symbol id="icon-arrow-up" viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></symbol><symbol id="icon-arrow-down" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></symbol><symbol id="icon-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol><symbol id="icon-palette" viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1.2"/><circle cx="17.5" cy="10.5" r="1.2"/><circle cx="8.5" cy="7.5" r="1.2"/><circle cx="6.5" cy="12.5" r="1.2"/><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-1-.5-1.3-.3-.4-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c1.8 0 3.2-1.4 3.2-3.2C21 6.9 17 2 12 2z"/></symbol><symbol id="icon-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol><symbol id="icon-edit-3" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></symbol><symbol id="icon-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol><symbol id="icon-sparkle" viewBox="0 0 24 24"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/></symbol><symbol id="icon-tool" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol><symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="icon-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol><symbol id="icon-mic" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></symbol><symbol id="icon-building" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="18" x2="15" y2="18"/></symbol><symbol id="icon-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.7 13.3L7 22l5-3 5 3-1.7-8.7"/></symbol><symbol id="icon-map-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></symbol><symbol id="icon-mail" viewBox="0 0 24 24"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><polyline points="22 6 12 13 2 6"/></symbol><symbol id="icon-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol><symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol><symbol id="icon-book-open" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></symbol><symbol id="icon-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol><symbol id="icon-user-check" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></symbol><symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol></defs></svg>
+
+<div class="auth-shell">
+  <div class="auth-visual">
+    <div class="auth-circle-wrap">
+      <a href="index.html" class="logo"><img src="./assets/stackly.png" alt="Stackly"></a>
+
+      <div class="auth-circle" aria-hidden="true">
+        <div class="auth-circle-ring"></div>
+        <svg viewBox="0 0 400 400" role="img" aria-label="Illustration of a person logging in to an online course">
+          <defs>
+            <radialGradient id="bgGlow" cx="35%" cy="28%" r="75%">
+              <stop offset="0%" stop-color="var(--violet-soft)" stop-opacity=".35"/>
+              <stop offset="55%" stop-color="var(--gold)" stop-opacity=".12"/>
+              <stop offset="100%" stop-color="var(--ink-2)" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="capGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--coral)"/>
+              <stop offset="100%" stop-color="var(--gold)"/>
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="0" width="400" height="400" fill="url(#bgGlow)"/>
+
+          <!-- desk -->
+          <rect x="0" y="322" width="400" height="4" fill="var(--line)"/>
+
+          <!-- laptop -->
+          <g>
+            <rect x="130" y="196" width="140" height="96" rx="8" fill="var(--ink-3)" stroke="var(--line)" stroke-width="2"/>
+            <rect x="142" y="208" width="116" height="72" rx="3" fill="var(--dark)"/>
+            <!-- play button = "course video" -->
+            <circle cx="200" cy="244" r="20" fill="none" stroke="var(--gold)" stroke-width="2.5"/>
+            <polygon points="194,235 194,253 210,244" fill="var(--gold)"/>
+            <path d="M108 292h184l14 20H94z" fill="var(--ink-3)" stroke="var(--line)" stroke-width="2"/>
+          </g>
+
+          <!-- person -->
+          <g>
+            <circle cx="200" cy="150" r="30" fill="var(--ink-3)" stroke="var(--line)" stroke-width="2"/>
+            <path d="M144 292c2-38 30-60 56-60s54 22 56 60z" fill="var(--violet)"/>
+            <path d="M144 292c2-38 30-60 56-60s54 22 56 60z" fill="var(--violet)" fill-opacity=".85"/>
+          </g>
+
+          <!-- graduation cap floating above -->
+          <g transform="translate(285,108) rotate(-8)">
+            <polygon points="0,0 46,15 0,30 -46,15" fill="url(#capGrad)"/>
+            <rect x="-6" y="15" width="12" height="20" rx="2" fill="var(--dark)"/>
+            <line x1="34" y1="10" x2="34" y2="34" stroke="var(--dark)" stroke-width="2.5"/>
+            <circle cx="34" cy="37" r="3" fill="var(--dark)"/>
+          </g>
+
+          <!-- open book, lower-left -->
+          <g transform="translate(88,116) rotate(10)">
+            <path d="M0 0c14-6 28-6 34 0v34c-6-6-20-6-34 0z" fill="var(--ink-2)" stroke="var(--line)" stroke-width="2"/>
+            <path d="M34 0c14-6 28-6 34 0v34c-6-6-20-6-34 0z" fill="var(--ink-2)" stroke="var(--line)" stroke-width="2"/>
+          </g>
+
+          <!-- orbit ring + node echoing the brand mark -->
+          <ellipse cx="200" cy="150" rx="118" ry="118" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="3 6"/>
+          <circle cx="318" cy="150" r="6" fill="var(--gold)"/>
+          <circle cx="76" cy="196" r="5" fill="var(--violet-soft)"/>
+        </svg>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:56px;left:56px;right:56px;">
+      <p style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;font-weight:700;max-width:20ch;">"Small cohort meant no hiding. I built the habit I'd tried to self-teach for two years."</p>
+      <p class="mono" style="color:var(--slate);margin-top:12px;font-size:.82rem;">— Marcus Wei, Data Analytics Track</p>
+    </div>
+  </div>
+
+  <div class="auth-form-side">
+    <div class="auth-box reveal" style="opacity:1;transform:none;">
+      <a href="index.html" class="logo" style="margin-bottom:34px;"><img src="./assets/stackly.png" alt="Stackly"></a>
+
+      <div class="auth-tabs" data-tabs>
+        <button type="button" data-tab="signin" class="active">Log in</button>
+        <button type="button" data-tab="signup">Sign up</button>
+      </div>
+
+      <div data-panel="signin">
+        <p class="eyebrow" data-signin-eyebrow>Welcome back</p>
+        <h1 style="font-size:1.7rem;margin-top:10px;" data-signin-heading>Log in.</h1>
+        <p class="slate" style="color:var(--slate);font-size:.88rem;margin-top:8px;" data-signin-sub>Enter your details to access your dashboard.</p>
+
+        <span class="role-label">Log in as</span>
+        <div class="role-toggle" data-role-toggle>
+          <button type="button" data-role="member" class="active">
+            <svg class="icon" aria-hidden="true" style="margin-right:6px;"><use href="#icon-user-check"></use></svg>Student
+          </button>
+          <button type="button" data-role="admin">
+            <svg class="icon" aria-hidden="true" style="margin-right:6px;"><use href="#icon-lock"></use></svg>Admin
+          </button>
+        </div>
+
+        <form data-signin-form>
+          <div class="field"><label for="li-email">Email</label><input id="li-email" type="email" required placeholder="you@email.com"></div>
+          <div class="field"><label for="li-pw">Password</label>
+            <div class="pw-row"><input id="li-pw" type="password" required placeholder="••••••••" style="padding-right:60px;"><button type="button" class="pw-toggle">Show</button></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:.85rem;margin-bottom:22px;">
+            <label style="display:flex;align-items:center;gap:8px;color:var(--slate);"><input type="checkbox" style="width:auto;"> Remember me</label>
+            <a href="#" data-forgot-password style="color:var(--violet-soft);">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" data-signin-submit>Log in <span class="arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></span></button>
+        </form>
+      </div>
+
+      <div data-panel="signup" style="display:none;">
+        <h1 style="font-size:1.7rem;">Start your Stackly.</h1>
+        <p class="slate" style="color:var(--slate);font-size:.9rem;margin-top:8px;">Free to browse, no card required to apply.</p>
+        <form style="margin-top:26px;" data-signup-form>
+          <div class="field"><label for="su-name">Full name</label><input id="su-name" type="text" required placeholder="Jordan Reyes"></div>
+          <div class="field"><label for="su-email">Email</label><input id="su-email" type="email" required placeholder="you@email.com"></div>
+          <div class="field"><label for="su-pw">Password</label>
+            <div class="pw-row"><input id="su-pw" type="password" required minlength="8" placeholder="At least 8 characters" style="padding-right:60px;"><button type="button" class="pw-toggle">Show</button></div>
+          </div>
+          <div class="field" data-confirm-field>
+            <label for="su-pw-confirm">Confirm password</label>
+            <div class="pw-row"><input id="su-pw-confirm" type="password" required minlength="8" placeholder="Re-enter your password" style="padding-right:60px;"><button type="button" class="pw-toggle">Show</button></div>
+            <p class="field-error" data-confirm-error>Passwords don't match.</p>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Create account <span class="arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></span></button>
+        </form>
+      </div>
+
+      <div class="divider" data-auth-divider>or continue with</div>
+      <div class="oauth-row" data-oauth-row>
+        <button type="button">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.6 34.9 26.9 36 24 36c-5.3 0-9.6-3.3-11.3-7.9l-6.6 5.1C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.6 5.6C41.9 36.6 44 30.8 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+          Google
+        </button>
+        <button type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.42 7.86 10.95.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.29-1.68-1.29-1.68-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .3.2.66.79.55A10.51 10.51 0 0 0 23.5 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg>
+          GitHub
+        </button>
+      </div>
+
+      <p style="text-align:center;margin-top:28px;font-size:.85rem;color:var(--slate);"><a href="index.html" style="color:var(--gold);">Back to Home</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- popup modal -->
+<div class="popup-overlay" data-popup>
+  <div class="popup-box">
+    <button class="popup-close" type="button" data-popup-close aria-label="Close"><svg class="icon" aria-hidden="true"><use href="#icon-x"></use></svg></button>
+    <div class="icon-box"><svg class="icon" aria-hidden="true"><use href="#icon-check-circle" data-popup-icon></use></svg></div>
+    <h3 data-popup-title>Notice</h3>
+    <p data-popup-message>Message goes here.</p>
+    <button type="button" class="btn btn-primary btn-block" data-popup-ok>OK</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+/* ==========================================================================
+   1) CORE INTERACTIVITY — tabs, role toggle, popup, forms, password toggle.
+   This runs first and is wrapped so that a failure anywhere below (e.g. a
+   third-party animation script failing to load) can NEVER stop the login
+   page's buttons from working.
+   ========================================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* ---------- header scroll state ---------- */
+  const header = document.querySelector('.site-header');
+  const onScroll = () => {
+    if(!header) return;
+    header.classList.toggle('scrolled', window.scrollY > 40);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* ---------- mobile nav ---------- */
+  const burger = document.querySelector('.burger');
+  const mobilePanel = document.querySelector('.mobile-panel');
+  const closeBtn = document.querySelector('.mobile-panel .close-btn');
+  if(burger && mobilePanel){
+    burger.addEventListener('click', () => mobilePanel.classList.add('open'));
+    closeBtn?.addEventListener('click', () => mobilePanel.classList.remove('open'));
+    mobilePanel.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobilePanel.classList.remove('open')));
+  }
+
+  /* ---------- role toggle state (member / admin) ---------- */
+  let selectedRole = 'member';
+  const roleToggle = document.querySelector('[data-role-toggle]');
+  const signinEyebrow = document.querySelector('[data-signin-eyebrow]');
+  const signinHeading = document.querySelector('[data-signin-heading]');
+  const signinSub = document.querySelector('[data-signin-sub]');
+  const signinSubmit = document.querySelector('[data-signin-submit]');
+  const oauthRow = document.querySelector('[data-oauth-row]');
+  const oauthDivider = document.querySelector('[data-auth-divider]');
+
+  function applyRoleUI(role){
+    const isAdmin = role === 'admin';
+
+    if(signinEyebrow) signinEyebrow.textContent = isAdmin ? 'Restricted access' : 'Welcome back';
+    if(signinHeading) signinHeading.textContent = isAdmin ? 'Admin login.' : 'Log in.';
+    if(signinSub) signinSub.textContent = isAdmin
+      ? 'Sign in with your admin credentials.'
+      : 'Enter your details to access your dashboard.';
+    if(signinSubmit) signinSubmit.innerHTML = isAdmin
+      ? 'Log in <span class="arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></span>'
+      : 'Log in <span class="arrow"><svg class="icon" aria-hidden="true"><use href="#icon-arrow-right"></use></svg></span>';
+  }
+
+  if(roleToggle){
+    roleToggle.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        roleToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedRole = btn.dataset.role;
+        applyRoleUI(selectedRole);
+      });
+    });
+  }
+
+  /* ---------- tab switcher (Log in / Sign up) ---------- */
+  const tabButtons = document.querySelectorAll('[data-tab]');
+  function activateTab(target){
+    tabButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === target));
+    document.querySelectorAll('[data-panel]').forEach(panel => {
+      const match = panel.dataset.panel === target || target === 'all';
+      panel.style.display = match ? '' : 'none';
+      if(match && window.gsap){
+        gsap.fromTo(panel, {opacity:0, y:14}, {opacity:1, y:0, duration:0.5, ease:'power2.out'});
+      }
+    });
+  }
+  if(tabButtons.length){
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+    });
+  }
+
+  /* ---------- popup modal helper ---------- */
+  const popup = document.querySelector('[data-popup]');
+  const popupTitle = popup?.querySelector('[data-popup-title]');
+  const popupMessage = popup?.querySelector('[data-popup-message]');
+  const popupIcon = popup?.querySelector('[data-popup-icon]');
+  let popupCallback = null;
+
+  function showPopup(message, {title = 'Notice', icon = 'icon-check-circle', onClose = null} = {}){
+    if(!popup) return;
+    if(popupTitle) popupTitle.textContent = title;
+    if(popupMessage) popupMessage.textContent = message;
+    if(popupIcon) popupIcon.setAttribute('href', `#${icon}`);
+    popupCallback = onClose;
+    popup.classList.add('open');
+  }
+  function closePopup(){
+    if(!popup) return;
+    popup.classList.remove('open');
+    const cb = popupCallback;
+    popupCallback = null;
+    if(typeof cb === 'function') cb();
+  }
+  popup?.querySelector('[data-popup-ok]')?.addEventListener('click', closePopup);
+  popup?.querySelector('[data-popup-close]')?.addEventListener('click', closePopup);
+  popup?.addEventListener('click', e => { if(e.target === popup) closePopup(); });
+
+  /* ---------- build a profile (name / username / avatar initial) from an email ----------
+     "jordan.green@stackly.io"  -> name: "Jordan Green", username: "jordan.green", initial: "J"
+     "elena_cruz99@stackly.io"  -> name: "Elena Cruz",   username: "elena_cruz99", initial: "E"   */
+  function buildProfileFromEmail(email){
+    const clean = (email || '').trim();
+    const localPart = (clean.split('@')[0] || '').trim();
+    const words = localPart.replace(/[^a-zA-Z]+/g, ' ').trim().split(/\s+/).filter(Boolean);
+    const name = words.length
+      ? words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ')
+      : 'Guest';
+    const initial = name.charAt(0).toUpperCase() || 'G';
+    return { email: clean, username: localPart || 'guest', name, initial };
+  }
+
+  /* ---------- sign-in form: collects role-specific fields and routes accordingly ---------- */
+  const signinForm = document.querySelector('[data-signin-form]');
+  signinForm?.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const email = document.getElementById('li-email')?.value.trim();
+    const password = document.getElementById('li-pw')?.value;
+
+    // Build the profile straight from the email that was typed in, and stash it
+    // so the dashboard page can pick up the name + avatar initial after redirect.
+    const profile = buildProfileFromEmail(email);
+    profile.role = selectedRole;
+    try{ sessionStorage.setItem('stacklyProfile', JSON.stringify(profile)); }catch(err){ /* storage unavailable — dashboard falls back to defaults */ }
+
+    if(selectedRole === 'admin'){
+      // Admin login now uses the same email + password fields as students —
+      // no separate access code required.
+      const adminCredentials = {email, password};
+      window.location.href = 'admin-dashboard.html';
+      return;
+    }
+
+    // Student login — email + password.
+    const studentCredentials = {email, password};
+    window.location.href = 'user-dashboard.html';
+  });
+
+  /* ---------- sign-up form: validates matching passwords, then shows confirmation and sends user to the login tab ---------- */
+  const signupForm = document.querySelector('[data-signup-form]');
+  const suPw = document.getElementById('su-pw');
+  const suPwConfirm = document.getElementById('su-pw-confirm');
+  const confirmField = document.querySelector('[data-confirm-field]');
+
+  function checkPasswordsMatch(){
+    if(!suPw || !suPwConfirm || !confirmField) return true;
+    const mismatch = suPwConfirm.value.length > 0 && suPwConfirm.value !== suPw.value;
+    confirmField.classList.toggle('has-error', mismatch);
+    return !mismatch;
+  }
+  suPwConfirm?.addEventListener('input', checkPasswordsMatch);
+  suPw?.addEventListener('input', () => { if(suPwConfirm?.value) checkPasswordsMatch(); });
+
+  signupForm?.addEventListener('submit', e => {
+    e.preventDefault();
+
+    if(suPw && suPwConfirm && suPw.value !== suPwConfirm.value){
+      confirmField?.classList.add('has-error');
+      suPwConfirm.focus();
+      return;
+    }
+
+    const suEmail = document.getElementById('su-email')?.value.trim();
+    const suName = document.getElementById('su-name')?.value.trim();
+    const signupProfile = buildProfileFromEmail(suEmail);
+    if(suName) signupProfile.name = suName; // prefer the name they typed, if any
+    signupProfile.initial = signupProfile.name.charAt(0).toUpperCase() || 'G';
+    try{ sessionStorage.setItem('stacklyProfile', JSON.stringify(signupProfile)); }catch(err){}
+
+    showPopup('Your account has been created. Please sign in to continue.', {
+      title: 'Account created',
+      icon: 'icon-check-circle',
+      onClose: () => {
+        activateTab('signin');
+        signupForm.reset();
+        confirmField?.classList.remove('has-error');
+      }
+    });
+  });
+
+  /* ---------- forgot password: popup ---------- */
+  document.querySelectorAll('[data-forgot-password]').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      showPopup('If an account exists for this email, a password reset link has been sent.', {
+        title: 'Check your email',
+        icon: 'icon-mail'
+      });
+    });
+  });
+
+  /* ---------- password visibility toggle ---------- */
+  document.querySelectorAll('.pw-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.previousElementSibling;
+      if(!input) return;
+      input.type = input.type === 'password' ? 'text' : 'password';
+      btn.textContent = input.type === 'password' ? 'Show' : 'Hide';
+    });
+  });
+
+  /* ---------- oauth buttons (Google / GitHub) — send to error page ---------- */
+  document.querySelectorAll('[data-oauth-row] button').forEach(btn => {
+    btn.addEventListener('click', () => { window.location.href = 'error.html'; });
+  });
+
+  /* ---------- sidebar toggle (dashboards, harmless no-op here) ---------- */
+  const dashBurger = document.querySelector('.dash-burger');
+  const sidebar = document.querySelector('.dash-sidebar');
+  dashBurger?.addEventListener('click', () => sidebar?.classList.toggle('open'));
+
+  /* set initial role UI state */
+  applyRoleUI(selectedRole);
+
+  /* ==========================================================================
+     2) DECORATIVE ANIMATION — comet cursor, orbit motif spin, GSAP reveals.
+     Wrapped in try/catch so a CDN hiccup here (e.g. an optional GSAP plugin
+     failing to load) can never take down the interactive code above.
+     ========================================================================== */
+  try {
+    if(window.gsap && window.ScrollTrigger){
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    /* comet cursor */
+    const comet = document.querySelector('.comet');
+    if(comet && window.gsap){
+      let cx = 0, cy = 0, tx = 0, ty = 0;
+      window.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+      gsap.ticker.add(() => {
+        cx += (tx - cx) * 0.18;
+        cy += (ty - cy) * 0.18;
+        comet.style.transform = `translate(${cx - 5}px, ${cy - 5}px)`;
+      });
+    }
+
+    if(window.gsap){
+      /* generic scroll reveal */
+      gsap.utils.toArray('.reveal').forEach((el) => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:0.9, ease:'power3.out',
+          delay: (el.dataset.delay ? parseFloat(el.dataset.delay) : 0),
+          scrollTrigger: window.ScrollTrigger ? {trigger:el, start:'top 88%', once:true} : undefined,
+          immediateRender: !window.ScrollTrigger
+        });
+      });
+
+      /* subtle float on the auth circle illustration, in place of the old orbit spin */
+      const authCircleRing = document.querySelector('.auth-circle-ring');
+      const authCircle = document.querySelector('.auth-circle');
+      if(authCircle){
+        gsap.to(authCircle, {y:-10, duration:3.2, repeat:-1, yoyo:true, ease:'sine.inOut'});
+      }
+      if(authCircleRing){
+        gsap.to(authCircleRing, {rotate:360, duration:40, repeat:-1, ease:'none', transformOrigin:'50% 50%'});
+      }
+    }
+
+    window.addEventListener('load', () => { if(window.ScrollTrigger) ScrollTrigger.refresh(); });
+  } catch(err){
+    console.warn('Decorative animation setup skipped due to an error:', err);
+  }
+
+});
+</script>
+</body>
+</html>
